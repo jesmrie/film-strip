@@ -27,13 +27,13 @@
             left: 0;
             transform: translateY(-50%);
             width: 100vw;
-            height: 180px;
+            height: 320px;
             overflow: hidden;
         }
 
         .canister {
             position: absolute;
-            left: 30px;
+            left: 40px;
             top: 50%;
             transform: translateY(-50%);
             z-index: 10;
@@ -41,18 +41,18 @@
         }
 
         .canister img {
-            height: 180px;
+            height: 320px;
             width: auto;
         }
 
         .film-strip-wrapper {
             position: absolute;
-            left: 125px;
+            left: 220px;
             top: 50%;
             transform: translateY(-50%);
             overflow: hidden;
-            height: 160px;
-            width: calc(100vw - 125px);
+            height: 280px;
+            width: calc(100vw - 220px);
             display: flex;
             align-items: center;
         }
@@ -68,8 +68,8 @@
 
         .film-frame {
             position: relative;
-            width: 115px;
-            height: 145px;
+            width: 200px;
+            height: 252px;
             flex-shrink: 0;
         }
 
@@ -83,10 +83,10 @@
 
         .photo-slot {
             position: absolute;
-            top: 33px;
-            left: 4px;
-            width: 108px;
-            height: 74px;
+            top: 57px;
+            left: 6px;
+            width: 188px;
+            height: 129px;
             overflow: hidden;
             background: #1a1a1a;
         }
@@ -106,10 +106,10 @@
 
         .frame-number {
             position: absolute;
-            bottom: 6px;
+            bottom: 10px;
             left: 50%;
             transform: translateX(-50%);
-            font-size: 9px;
+            font-size: 14px;
             color: #d4740e;
             font-family: 'Courier New', monospace;
             font-weight: bold;
@@ -118,13 +118,174 @@
 
         .film-end {
             flex-shrink: 0;
-            height: 145px;
+            height: 252px;
             align-self: center;
         }
 
         .film-end svg {
             height: 100%;
             width: auto;
+        }
+
+        /* Upload UI */
+        .upload-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #d4740e;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            font-weight: bold;
+            z-index: 200;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            transition: background 0.3s, transform 0.2s;
+        }
+
+        .upload-btn:hover {
+            background: #b8620c;
+            transform: scale(1.05);
+        }
+
+        .upload-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0,0,0,0.8);
+            z-index: 300;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .upload-modal.active {
+            display: flex;
+        }
+
+        .upload-container {
+            background: #fff;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .upload-container h2 {
+            margin: 0 0 20px 0;
+            color: #333;
+            font-family: 'Courier New', monospace;
+        }
+
+        .upload-dropzone {
+            border: 3px dashed #d4740e;
+            border-radius: 10px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-bottom: 20px;
+        }
+
+        .upload-dropzone:hover,
+        .upload-dropzone.dragover {
+            background: #fff5eb;
+        }
+
+        .upload-dropzone p {
+            margin: 0;
+            color: #666;
+            font-size: 16px;
+        }
+
+        .upload-dropzone input {
+            display: none;
+        }
+
+        .photo-preview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .photo-preview-item {
+            position: relative;
+            aspect-ratio: 4/3;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .photo-preview-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .photo-preview-item .remove-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(255,0,0,0.8);
+            color: white;
+            border: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 14px;
+            line-height: 1;
+        }
+
+        .upload-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .upload-actions button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .btn-apply {
+            background: #d4740e;
+            color: white;
+        }
+
+        .btn-apply:hover {
+            background: #b8620c;
+        }
+
+        .btn-cancel {
+            background: #ddd;
+            color: #333;
+        }
+
+        .btn-cancel:hover {
+            background: #ccc;
+        }
+
+        .btn-clear {
+            background: #ff4444;
+            color: white;
+        }
+
+        .btn-clear:hover {
+            background: #cc0000;
         }
 
         .scroll-indicator {
@@ -182,7 +343,7 @@
         /* Responsive */
         @media (max-width: 768px) {
             .film-container {
-                height: 120px;
+                height: 180px;
             }
 
             .canister {
@@ -190,40 +351,58 @@
             }
 
             .canister img {
-                height: 120px;
+                height: 180px;
             }
 
             .film-strip-wrapper {
-                left: 85px;
-                height: 100px;
-                width: calc(100vw - 85px);
+                left: 120px;
+                height: 160px;
+                width: calc(100vw - 120px);
             }
 
             .film-frame {
-                width: 77px;
-                height: 97px;
+                width: 115px;
+                height: 145px;
             }
 
             .photo-slot {
-                top: 22px;
-                left: 3px;
-                width: 72px;
-                height: 50px;
+                top: 33px;
+                left: 4px;
+                width: 108px;
+                height: 74px;
             }
 
             .frame-number {
-                font-size: 6px;
-                bottom: 3px;
+                font-size: 9px;
+                bottom: 5px;
             }
 
             .film-end {
-                height: 97px;
+                height: 145px;
             }
         }
     </style>
 </head>
 <body>
     <div class="progress-bar" id="progressBar"></div>
+
+    <button class="upload-btn" id="uploadBtn">+ Add Photos</button>
+
+    <div class="upload-modal" id="uploadModal">
+        <div class="upload-container">
+            <h2>Upload Your Photos</h2>
+            <div class="upload-dropzone" id="dropzone">
+                <p>Drag & drop photos here or click to browse</p>
+                <input type="file" id="fileInput" multiple accept="image/*">
+            </div>
+            <div class="photo-preview-grid" id="previewGrid"></div>
+            <div class="upload-actions">
+                <button class="btn-clear" id="clearBtn">Clear All</button>
+                <button class="btn-cancel" id="cancelBtn">Cancel</button>
+                <button class="btn-apply" id="applyBtn">Apply Photos</button>
+            </div>
+        </div>
+    </div>
 
     <div class="film-container" id="filmContainer">
         <div class="canister">
@@ -243,13 +422,19 @@
 
     <script>
         // Configuration
-        const NUM_FRAMES = 12;
-        const FRAME_WIDTH = 115;
+        let NUM_FRAMES = 12;
+        const FRAME_WIDTH = 200;
 
-        // Photo URLs from picsum
-        const photos = Array.from({ length: NUM_FRAMES }, (_, i) =>
+        // Default photo URLs from picsum
+        const defaultPhotos = Array.from({ length: 12 }, (_, i) =>
             `https://picsum.photos/seed/${i + 100}/400/280`
         );
+
+        // Current photos (can be replaced by user uploads)
+        let photos = [...defaultPhotos];
+
+        // Uploaded photos storage
+        let uploadedPhotos = [];
 
         // Film frame SVG template
         const filmFrameSVG = `<svg width="164" height="207" viewBox="0 0 164 207" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -365,9 +550,161 @@
             }
         }
 
+        // Upload UI functionality
+        function setupUploadUI() {
+            const uploadBtn = document.getElementById('uploadBtn');
+            const uploadModal = document.getElementById('uploadModal');
+            const dropzone = document.getElementById('dropzone');
+            const fileInput = document.getElementById('fileInput');
+            const previewGrid = document.getElementById('previewGrid');
+            const applyBtn = document.getElementById('applyBtn');
+            const cancelBtn = document.getElementById('cancelBtn');
+            const clearBtn = document.getElementById('clearBtn');
+
+            // Open modal
+            uploadBtn.addEventListener('click', () => {
+                uploadedPhotos = [];
+                previewGrid.innerHTML = '';
+                uploadModal.classList.add('active');
+            });
+
+            // Close modal
+            cancelBtn.addEventListener('click', () => {
+                uploadModal.classList.remove('active');
+            });
+
+            // Click outside to close
+            uploadModal.addEventListener('click', (e) => {
+                if (e.target === uploadModal) {
+                    uploadModal.classList.remove('active');
+                }
+            });
+
+            // Dropzone click
+            dropzone.addEventListener('click', () => {
+                fileInput.click();
+            });
+
+            // Drag and drop
+            dropzone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dropzone.classList.add('dragover');
+            });
+
+            dropzone.addEventListener('dragleave', () => {
+                dropzone.classList.remove('dragover');
+            });
+
+            dropzone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropzone.classList.remove('dragover');
+                handleFiles(e.dataTransfer.files);
+            });
+
+            // File input change
+            fileInput.addEventListener('change', (e) => {
+                handleFiles(e.target.files);
+            });
+
+            // Handle files
+            function handleFiles(files) {
+                Array.from(files).forEach(file => {
+                    if (file.type.startsWith('image/')) {
+                        const reader = new FileReader();
+                        reader.onload = (e) => {
+                            uploadedPhotos.push(e.target.result);
+                            renderPreviews();
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+            }
+
+            // Render preview grid
+            function renderPreviews() {
+                previewGrid.innerHTML = '';
+                uploadedPhotos.forEach((photo, index) => {
+                    const item = document.createElement('div');
+                    item.className = 'photo-preview-item';
+                    item.innerHTML = `
+                        <img src="${photo}" alt="Photo ${index + 1}">
+                        <button class="remove-btn" data-index="${index}">&times;</button>
+                    `;
+                    previewGrid.appendChild(item);
+                });
+
+                // Add remove handlers
+                previewGrid.querySelectorAll('.remove-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const index = parseInt(e.target.dataset.index);
+                        uploadedPhotos.splice(index, 1);
+                        renderPreviews();
+                    });
+                });
+            }
+
+            // Clear all
+            clearBtn.addEventListener('click', () => {
+                uploadedPhotos = [];
+                previewGrid.innerHTML = '';
+            });
+
+            // Apply photos
+            applyBtn.addEventListener('click', () => {
+                if (uploadedPhotos.length > 0) {
+                    photos = [...uploadedPhotos];
+                    NUM_FRAMES = photos.length;
+                    regenerateFilmStrip();
+                }
+                uploadModal.classList.remove('active');
+            });
+        }
+
+        // Regenerate film strip with new photos
+        function regenerateFilmStrip() {
+            const filmStrip = document.getElementById('filmStrip');
+            filmStrip.innerHTML = '';
+
+            for (let i = 0; i < NUM_FRAMES; i++) {
+                const frame = document.createElement('div');
+                frame.className = 'film-frame';
+                frame.innerHTML = filmFrameSVG;
+
+                const photoSlot = document.createElement('div');
+                photoSlot.className = 'photo-slot';
+
+                const img = document.createElement('img');
+                img.src = photos[i];
+                img.alt = `Photo ${i + 1}`;
+                photoSlot.appendChild(img);
+
+                frame.appendChild(photoSlot);
+
+                const frameNum = document.createElement('div');
+                frameNum.className = 'frame-number';
+                frameNum.textContent = frameNumbers[i] || (i + 1).toString();
+                frame.appendChild(frameNum);
+
+                filmStrip.appendChild(frame);
+            }
+
+            // Add end cap
+            const endCap = document.createElement('div');
+            endCap.className = 'film-end';
+            endCap.innerHTML = filmEndSVG;
+            filmStrip.appendChild(endCap);
+
+            // Reset scroll position
+            window.scrollTo(0, 0);
+            currentTranslate = 0;
+            targetTranslate = 0;
+            filmStrip.style.transform = `translateX(0px)`;
+        }
+
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
             generateFilmStrip();
+            setupUploadUI();
 
             // Start at position 0 (first frames visible at canister)
             currentTranslate = 0;
