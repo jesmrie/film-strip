@@ -16,9 +16,55 @@
         }
 
         body {
-            background: #f5f5f5;
+            background-color: #f5f5f5;
             font-family: 'Courier New', monospace;
             height: 300vh;
+        }
+
+        /* Background image layer */
+        #bg-layer {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            background-size: cover;
+            background-position: center;
+            opacity: 0.45;
+        }
+
+        /* Film texture overlay (shown over background image) */
+        #texture-layer {
+            position: fixed;
+            inset: 0;
+            z-index: 1;
+            background: url('film-texture.png') center / 100% 100% no-repeat;
+            mix-blend-mode: overlay;
+            pointer-events: none;
+            display: none;
+        }
+
+        /* Film grain overlay */
+        #grain-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            pointer-events: none;
+            opacity: 0.07;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+            background-repeat: repeat;
+            background-size: 180px 180px;
+            animation: grain-shift 0.8s steps(8) infinite;
+        }
+
+        @keyframes grain-shift {
+            0%   { background-position:   0%   0%; }
+            12%  { background-position:  20% -15%; }
+            25%  { background-position: -10%  10%; }
+            37%  { background-position:  15%  20%; }
+            50%  { background-position: -20%  -5%; }
+            62%  { background-position:   8%  15%; }
+            75%  { background-position:  -5% -20%; }
+            87%  { background-position:  10%   5%; }
+            100% { background-position:   0%   0%; }
         }
 
         .film-container {
@@ -99,12 +145,12 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            filter: sepia(15%) saturate(110%) brightness(95%) contrast(105%);
+            filter: sepia(55%) saturate(80%) brightness(88%) contrast(108%) hue-rotate(5deg);
             transition: filter 0.3s ease, transform 0.3s ease;
         }
 
         .photo-slot:hover img {
-            filter: sepia(5%) saturate(120%) brightness(100%) contrast(110%);
+            filter: sepia(30%) saturate(95%) brightness(95%) contrast(110%) hue-rotate(3deg);
             transform: scale(1.05);
         }
 
@@ -175,6 +221,96 @@
         .film-end svg {
             height: 100%;
             width: 100%;
+        }
+
+        /* Settings */
+        .settings-wrap {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 500;
+        }
+
+        .settings-trigger {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0.25;
+            cursor: pointer;
+            transition: opacity 0.3s;
+            color: #382F2E;
+        }
+
+        .settings-trigger svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .settings-wrap:hover .settings-trigger,
+        .settings-panel.open ~ .settings-trigger {
+            opacity: 0.7;
+        }
+
+        .settings-panel {
+            position: absolute;
+            bottom: 32px;
+            right: 0;
+            background: rgba(56, 47, 46, 0.92);
+            border-radius: 10px;
+            padding: 12px 14px;
+            min-width: 180px;
+            display: none;
+            flex-direction: column;
+            gap: 8px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+        }
+
+        .settings-panel.open {
+            display: flex;
+        }
+
+        .settings-panel-label {
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            color: rgba(255,255,255,0.5);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 2px;
+        }
+
+        .bg-upload-btn {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 6px;
+            padding: 7px 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            cursor: pointer;
+            text-align: left;
+            transition: background 0.2s;
+        }
+
+        .bg-upload-btn:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .bg-remove-btn {
+            background: transparent;
+            color: rgba(255,255,255,0.4);
+            border: none;
+            padding: 4px 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            cursor: pointer;
+            text-align: left;
+            transition: color 0.2s;
+        }
+
+        .bg-remove-btn:hover {
+            color: rgba(255,255,255,0.8);
         }
 
         /* Upload UI */
@@ -417,6 +553,9 @@
     </style>
 </head>
 <body>
+    <div id="bg-layer"></div>
+    <div id="texture-layer"></div>
+    <div id="grain-overlay"></div>
     <div class="progress-bar" id="progressBar"></div>
 
     <div class="upload-modal" id="uploadModal">
@@ -449,6 +588,23 @@
     <div class="scroll-indicator" id="scrollIndicator">
         <div class="scroll-arrow"></div>
         <span>Scroll to explore</span>
+    </div>
+
+    <div class="settings-wrap">
+        <div class="settings-trigger">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="3"/>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+            </svg>
+        </div>
+        <div class="settings-panel">
+            <span class="settings-panel-label">Background</span>
+            <label>
+                <input type="file" id="bgInput" accept="image/*" style="display:none">
+                <span class="bg-upload-btn">Choose image…</span>
+            </label>
+            <button class="bg-remove-btn" id="bgRemoveBtn">Remove background</button>
+        </div>
     </div>
 
     <script>
@@ -741,10 +897,52 @@
             }
         }
 
+        // Background image
+        function setupBackground() {
+            const bgInput = document.getElementById('bgInput');
+            const settingsWrap = document.querySelector('.settings-wrap');
+            const settingsPanel = document.querySelector('.settings-panel');
+            let hideTimeout;
+
+            function openPanel() {
+                clearTimeout(hideTimeout);
+                settingsPanel.classList.add('open');
+            }
+
+            function closePanel() {
+                hideTimeout = setTimeout(() => settingsPanel.classList.remove('open'), 200);
+            }
+
+            settingsWrap.addEventListener('mouseenter', openPanel);
+            settingsWrap.addEventListener('mouseleave', closePanel);
+            settingsPanel.addEventListener('mouseenter', openPanel);
+            settingsPanel.addEventListener('mouseleave', closePanel);
+
+            bgInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = (ev) => {
+                    document.getElementById('bg-layer').style.backgroundImage = `url('${ev.target.result}')`;
+                    document.body.style.backgroundColor = 'color-mix(in srgb, #FFFFFF 40%, #351B03)';
+                    document.getElementById('texture-layer').style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+                bgInput.value = '';
+            });
+
+            document.getElementById('bgRemoveBtn').addEventListener('click', () => {
+                document.getElementById('bg-layer').style.backgroundImage = '';
+                document.getElementById('texture-layer').style.display = 'none';
+                document.body.style.backgroundColor = '#f5f5f5';
+            });
+        }
+
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
             generateFilmStrip();
             setupUploadUI();
+            setupBackground();
 
             // Start at position 0 (first frames visible at canister)
             currentTranslate = 0;
