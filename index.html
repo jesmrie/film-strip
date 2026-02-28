@@ -604,11 +604,11 @@
             const maxScroll = document.body.scrollHeight - window.innerHeight;
             const scrollProgress = Math.min(Math.max(scrollY / maxScroll, 0), 1);
 
-            // Strip moves left as you scroll, keeping it flush with the canister.
-            // At scroll=0: "Add Photos" is at the left edge (leftmost, visible).
-            // At scroll=100%: all frames (including "Add Photos") are hidden behind the canister.
-            const scrollDistance = NUM_FRAMES * FRAME_WIDTH;
-            targetTranslate = -scrollDistance * scrollProgress;
+            // Strip unwinds rightward as you scroll.
+            // At scroll=0: Photo N (last photo) is at the left edge; everything else is behind the canister.
+            // At scroll=100%: "Add Photos" is at the left edge; all photos are visible to the right.
+            const scrollDistance = photos.length * FRAME_WIDTH;
+            targetTranslate = -scrollDistance * (1 - scrollProgress);
 
             if (!isAnimating) {
                 isAnimating = true;
@@ -724,9 +724,10 @@
 
             // Reset scroll position
             window.scrollTo(0, 0);
-            currentTranslate = 0;
-            targetTranslate = 0;
-            document.getElementById('filmStrip').style.transform = `translateX(0px)`;
+            const initialTranslate = -photos.length * FRAME_WIDTH;
+            currentTranslate = initialTranslate;
+            targetTranslate = initialTranslate;
+            document.getElementById('filmStrip').style.transform = `translateX(${initialTranslate}px)`;
 
             // Show/hide scroll indicator based on photos
             const scrollIndicator = document.getElementById('scrollIndicator');
